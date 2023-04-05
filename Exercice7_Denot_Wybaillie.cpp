@@ -196,17 +196,26 @@ int main(int argc, char* argv[])
     }
     ++stride;
 
+
     // Evolution :
+
     for(int i(1); i<N-1; ++i)
+
     {
-      fnext[i] = fnow[i]; // TODO : Compléter le schéma A
+
+      fnext[i] = dt*dt*vel2[i]*vel2[i]/dx*dx*(fnow[i+1] - 2*fnow[i] + fnow[i-1]) - (fpast[i] - 2*fnow[i]); 
+      // Done : Compléter le schéma 
       if(schema == "B"){
-        fnext[i] += 0.; // TODO : Compléter le schéma B
+        fnext[i] = dt*dt*(vel2[i+1]*(fnow[i+1] - fnow[i])/dx*dx - vel2[i]*(fnow[i] - fnow[i-1])/dx*dx) - (fpast[i] - 2*fnow[i]);
+         // Done : Compléter le schéma B (en ajoutant des termes au A)
       }else if(schema == "C"){
-        fnext[i] += 0.; // TODO : Compléter le schéma C
+        fnext[i] = dt*dt*(vel2[i+1]*fnow[i+1] - 2*vel2[i]*fnow[i] + vel2[i-1]*fnow[i-1])/dx*dx - (fpast[i] - 2*fnow[i]); 
+        // Done : Compléter le schéma C (en ajoutant des termes au A)
       }
-      
+
     }
+
+
 
     // add boundary conditions
     boundary_condition(fnext, fnow, A, omega, t, dt, beta2, bc_l, bc_r, N);
