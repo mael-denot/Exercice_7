@@ -1,0 +1,26 @@
+% Physique :
+cb_gauche=harmonique  !fixe, libre, harmonique, sortie
+cb_droit=fixe
+v_uniform = true ! u^2=const or not
+A=0.0      ! amplitude condition au bord harmonique
+omega=0.0  ! frequence condition au bord harmonique
+tfin=4.0
+
+schema=A ! Equation A ou B ou C
+Npoints=65
+minit=2 ! numero du mode propre
+initialization = zero ! cos ou sin pour un mode propre
+fmn=1.0 ! amplitude initiale
+
+CFL=1.0
+output=test.out
+n_stride=1
+ecrire_f=1
+
+hL = 7.5e3
+hR = 0.02e3
+h00= 2.0  ! profondeur si v_uniform = true
+xa= 5e5
+xb= 9.5e5
+xL= 0.0  ! left boundary of the domain
+xR= 12.0 ! right boundary of the domain
