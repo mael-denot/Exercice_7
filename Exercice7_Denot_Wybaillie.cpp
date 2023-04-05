@@ -16,13 +16,13 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
 		vector<double> &beta2, string &bc_l, string &bc_r, int &N)
 {
       if (bc_l == "fixe"){
-        fnext[0] = 999999999999999.; // TODO : Completer la condition au bord gauche fixe
+        fnext[0] = fnow[0]; // done : Completer la condition au bord gauche fixe
       }else if(bc_l == "libre"){
-        fnext[0] = 999999999999999.; // TODO : Completer la condition au bord gauche libre
+        fnext[0] = fnext[1]; // done : Completer la condition au bord gauche libre
       }else if(bc_l== "harmonique"){
-        fnext[0] = 999999999999999.; // TODO : Completer la condition au bord gauche harmonique
+        fnext[0] = A*sin(omega*t); // done : Completer la condition au bord gauche harmonique
       }else if (bc_l =="sortie"){
-        fnext[0] = 999999999999999.; // TODO : Completer la condition au bord gauche "sortie de l'onde"
+        fnext[0] = fnow[0] ; // TODO : Completer la condition au bord gauche "sortie de l'onde"
       }else{
         cerr << "Merci de choisir une condition valide au bord gauche" << endl;
       }
