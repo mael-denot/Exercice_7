@@ -1,4 +1,22 @@
 1. a) ...
+b) done
+c) énergie
+
+2. a) réflexion aux bords
+b) Limite de stabilité
+c) modes propres (calcul analytique)
+d) vérification numérique des modes propres
+e) excitations résonnantes
+
+3. WKB (partie analytique)
+
+4. Vague de Tsunami
+a) hauteur de la vague ?
+b) perturbation durant un certain intervalle de temps. 
+ - vérifier vitesse de propagation
+ - vérifier amplitude
+c) fonds océaniques de plus en plus raides
+
 
 
 
@@ -8,3 +26,18 @@ Commandes:
 .\Exercice7_Denot_Wybaillie.exe
 
 explication du code par chatGPT:
+
+This code reads in parameters from a configuration file and simulates the propagation of a wave on a 1D
+grid using the finite difference method.
+
+The main function reads in various parameters such as the final time of the simulation, the number
+of points on the grid, the CFL number, the amplitude of the wave, etc. These parameters are read in
+from a configuration file specified by the user. The main function also initializes various vectors
+such as the position vector, the initial wave height vector, and the velocity vector. The program
+then goes on to simulate the propagation of the wave on the grid using the finite difference method.
+
+The function boundary_condition sets the boundary conditions for the wave on the grid based on the user's
+input. The function energie calculates the energy of the wave at a given time step. The overloaded operator <<
+is used to output the elements of a vector.
+
+Note that some parts of the code are incomplete and require the user to fill in certain parameters.

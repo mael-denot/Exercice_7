@@ -9,7 +9,13 @@
 
 using namespace std;
 
-
+double norme(vector<double> const& v)
+{
+  double norme_(0.);
+  for(unsigned int i(0); i<v.size(); ++i)
+    norme_ += v[i]*v[i];
+  return sqrt(norme_);
+}
 
 void boundary_condition(vector<double> &fnext, vector<double> &fnow, double const& A, double const& omega,\
 		double const& t,double const& dt, \
@@ -20,21 +26,21 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
       }else if(bc_l == "libre"){
         fnext[0] = fnext[1]; // done : Completer la condition au bord gauche libre
       }else if(bc_l== "harmonique"){
-        fnext[0] = A*sin(omega*t); // done : Completer la condition au bord gauche harmonique
+        fnext[0] = A*sin(omega*(t+dt)); // done : Completer la condition au bord gauche harmonique
       }else if (bc_l =="sortie"){
-        fnext[0] = fnow[0] ; // TODO : Completer la condition au bord gauche "sortie de l'onde"
+        fnext[0] = fnow[0] + norme(beta2)*(fnow[0] - fnow[1]) ; // done : Completer la condition au bord gauche "sortie de l'onde"
       }else{
         cerr << "Merci de choisir une condition valide au bord gauche" << endl;
       }
 	      
       if (bc_r == "fixe"){
-        fnext[N-1] = 999999999999999.; // TODO : Completer la condition au bord droit fixe
+        fnext[N-1] = fnow[N-1]; // done : Completer la condition au bord droit fixe
       }else if(bc_r == "libre"){
-        fnext[N-1] = 999999999999999.; // TODO : Completer la condition au bord droit libre
+        fnext[N-1] = fnext[N-2]; // done : Completer la condition au bord droit libre
       }else if(bc_r== "harmonique"){
-        fnext[N-1] = 999999999999999.; // TODO : Completer la condition au bord droit harmonique
+        fnext[N-1] = A*sin(omega*(t+dt)); // done : Completer la condition au bord droit harmonique
       }else if (bc_r =="sortie"){
-        fnext[N-1] = 999999999999999.; // TODO : Completer la condition au bord droit "sortie de l'onde"
+        fnext[N-1] = fnow[N-1] + norme(beta2)*(fnow[N-1] - fnow[N-2]); // done : Completer la condition au bord droit "sortie de l'onde"
       }else{
         cerr << "Merci de choisir une condition valide au bord droit" << endl;
       }
@@ -63,6 +69,14 @@ template <class T> ostream& operator<< (ostream& o, vector<T> const& v)
   if(len > 0)
     o << v[len-1];
   return o;
+}
+
+double E(vector<double> const& f, double const& dx) {
+  double E(0.);
+  for (int i = 0; i < f.size(); i++) {
+    E += f[i] * f[i] * dx;
+  }
+  return E;
 }
 
 //
@@ -151,6 +165,7 @@ int main(int argc, char* argv[])
   fichier_E.precision(15);
 
 
+
   // Initialisation des tableaux du schema numerique :
 
   //TODO initialize f and beta
@@ -190,7 +205,7 @@ int main(int argc, char* argv[])
       }else if(schema == "C"){
         fnext[i] += 0.; // TODO : Compléter le schéma C
       }
-
+      
     }
 
     // add boundary conditions
