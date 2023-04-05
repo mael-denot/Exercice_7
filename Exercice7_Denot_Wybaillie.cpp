@@ -211,5 +211,7 @@ int main(int argc, char* argv[])
   fichier_x.close();
   fichier_v.close();
 
+  cout << "Fin de la simulation." << endl;
+
   return 0;
 }

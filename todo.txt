@@ -1,0 +1,10 @@
+1. a) ...
+
+
+
+
+Commandes:
+ g++ -Wall -o "Exercice7_Denot_Wybaillie.exe" "Exercice7_Denot_Wybaillie.cpp" -std=gnu++11
+.\Exercice7_Denot_Wybaillie.exe
+
+explication du code par chatGPT:
