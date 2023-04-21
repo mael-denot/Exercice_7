@@ -1,9 +1,9 @@
 % Physique :
 cb_gauche=harmonique  !fixe, libre, harmonique, sortie
-cb_droit=fixe
+cb_droit=sortie
 v_uniform = true ! u^2=const or not
-A=0.0      ! amplitude condition au bord harmonique
-omega=0.0  ! frequence condition au bord harmonique
+A=1.0      ! amplitude condition au bord harmonique
+omega=1.0  ! frequence condition au bord harmonique
 tfin=4.0
 
 schema=A ! Equation A ou B ou C

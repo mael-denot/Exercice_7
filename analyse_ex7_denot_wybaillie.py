@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import matplotlib.animation, matplotlib.ticker
 import os, glob, argparse
 
-path = "/BIG_14TB/physiquenumerique/2022-2023/EX7/SOLUTION/"; #TODO insert path name 
-filename = path+"test.out_f";
+path = "C:/Users/maeld/OneDrive/Bureau/EPFL/Physique_numerique/Exercice_7/" #TODO insert path name 
+filename = path+"test_f.out";
 data_wave=np.loadtxt(filename)
-filename = path+"test.out_v";
+filename = path+"test_v.out";
 velocity = np.loadtxt(filename)
-filename = path+"test.out_x";
+filename = path+"test_x.out";
 data_x = np.loadtxt(filename)
 time = data_wave[:,0]
 wave = data_wave[:,1:]
@@ -18,6 +18,7 @@ plt.contourf(data_x,time,wave)
 plt.colorbar()
 plt.xlabel("x [m]")
 plt.ylabel("t [s]")
+plt.show()
 
 # Modes propres, verification numerique 
 
@@ -29,12 +30,13 @@ plt.figure()
 plt.plot(data_x,f_analytic)
 plt.plot(data_x,wave[0,:])
 plt.plot(data_x,wave[-1,:])
+plt.show()
 
 #%%
 
 # Parameter scan: Excitation resonante
-repertoire = "/BIG_14TB/physiquenumerique/2022-2023/EX7/SOLUTION/"; # TODO change as you need 
-executable = './Exercice7.exe'; # TODO change as you need 
+repertoire = "C:/Users/maeld/OneDrive/Bureau/EPFL/Physique_numerique/Exercice_7/"; # TODO change as you need 
+executable = './Exercice7_Denot_Wybaillie.exe'; # TODO change as you need 
 input = 'input'; # TODO change as you need 
 
 omegamin=1; omegamax=10; nomega=5; # TODO: choose your own parameters
@@ -66,4 +68,7 @@ plt.plot(omega,Emax) # TODO: xlabel, ylabel, etc...
 ## compute the propagation velocity of the wave and its amplitude: TODO
 
 #TODO: compare the WKB solutions with the numerical one
+
+
+
 

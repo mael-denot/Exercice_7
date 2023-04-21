@@ -17,6 +17,14 @@ double norme(vector<double> const& v)
   return sqrt(norme_);
 }
 
+double norme_sqrt(vector<double> const& v)
+{
+  double norme_(0.);
+  for(unsigned int i(0); i<v.size(); ++i)
+    norme_ += v[i];
+  return sqrt(norme_);
+}
+
 void boundary_condition(vector<double> &fnext, vector<double> &fnow, double const& A, double const& omega,\
 		double const& t,double const& dt, \
 		vector<double> &beta2, string &bc_l, string &bc_r, int &N)
@@ -28,7 +36,7 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
       }else if(bc_l== "harmonique"){
         fnext[0] = A*sin(omega*(t+dt)); // done : Completer la condition au bord gauche harmonique
       }else if (bc_l =="sortie"){
-        fnext[0] = fnow[0] + norme(beta2)*(fnow[0] - fnow[1]) ; // done : Completer la condition au bord gauche "sortie de l'onde"
+        fnext[0] = fnow[0] -  norme_sqrt(beta2)*(fnow[0] - fnow[1]) ; // done : Completer la condition au bord gauche "sortie de l'onde"
       }else{
         cerr << "Merci de choisir une condition valide au bord gauche" << endl;
       }
@@ -40,10 +48,11 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
       }else if(bc_r== "harmonique"){
         fnext[N-1] = A*sin(omega*(t+dt)); // done : Completer la condition au bord droit harmonique
       }else if (bc_r =="sortie"){
-        fnext[N-1] = fnow[N-1] + norme(beta2)*(fnow[N-1] - fnow[N-2]); // done : Completer la condition au bord droit "sortie de l'onde"
+        fnext[N-1] = fnow[N-1] - sqrt(beta2[N-1])*(fnow[N-1] - fnow[N-2]); // done : Completer la condition au bord droit "sortie de l'onde"
       }else{
         cerr << "Merci de choisir une condition valide au bord droit" << endl;
       }
+      cout << "beta2 = " << norme_sqrt(beta2) << endl;
 }
 
 //
@@ -53,7 +62,7 @@ double energie(vector<double> const& f, double const& dx)
 {
   double energie_(0.);
   for(unsigned int i(0); i<f.size()-1; ++i)
-    energie_ += 0.;
+    energie_ += f[i]*f[i]*dx;
 
   return energie_;
 }
@@ -145,6 +154,8 @@ int main(int argc, char* argv[])
      vel2[i]  = g* h0[i];
   }
 
+
+
   auto max_vel2 = std::max_element(vel2.begin(), vel2.end());
   dt = CFL * dx / sqrt(*max_vel2);
   cout << "dt is "<< dt<< " " <<dx<< endl;
@@ -152,16 +163,16 @@ int main(int argc, char* argv[])
   // Fichiers de sortie :
   string output = configFile.get<string>("output");
 
-  ofstream fichier_x((output + "_x").c_str());
+  ofstream fichier_x((output + "_x.out").c_str());
   fichier_x.precision(15);
 
-  ofstream fichier_v((output + "_v").c_str());
+  ofstream fichier_v((output + "_v.out").c_str());
   fichier_v.precision(15);
 
-  ofstream fichier_f((output + "_f").c_str());
+  ofstream fichier_f((output + "_f.out").c_str());
   fichier_f.precision(15);
 
-  ofstream fichier_E((output + "_E").c_str());
+  ofstream fichier_E((output + "_E.out").c_str());
   fichier_E.precision(15);
 
 
@@ -173,10 +184,10 @@ int main(int argc, char* argv[])
   {
     fpast[i] = 0.;
     fnow[i]  = 0.;
-    beta2[i] = 0.;
+    beta2[i] = vel2[i]*dt*dt/(dx*dx);
     if(initialization=="cos"){
-	fnow[i] = 0.;
-	fpast[i] = 0.;
+	fnow[i] = A*cos(2*PI*fmn*x[i]);
+	fpast[i] = A*cos(2*PI*fmn*x[i] - omega*dt);
     }else if(initialization=="sin"){
 	fnow[i] = 0.;
 	fpast[i] = 0.;
@@ -198,21 +209,15 @@ int main(int argc, char* argv[])
 
 
     // Evolution :
-
     for(int i(1); i<N-1; ++i)
-
     {
-
-      fnext[i] = dt*dt*vel2[i]*vel2[i]/dx*dx*(fnow[i+1] - 2*fnow[i] + fnow[i-1]) - (fpast[i] - 2*fnow[i]); 
-      // Done : Compléter le schéma 
+    fnext[i] = beta2[i]*(fnow[i+1] - 2*fnow[i] + fnow[i-1]) - (fpast[i] - 2*fnow[i]); // Done : Compléter le schéma A
       if(schema == "B"){
-        fnext[i] = dt*dt*(vel2[i+1]*(fnow[i+1] - fnow[i])/dx*dx - vel2[i]*(fnow[i] - fnow[i-1])/dx*dx) - (fpast[i] - 2*fnow[i]);
-         // Done : Compléter le schéma B (en ajoutant des termes au A)
+        //fnext[i] = dt*dt*(vel2[i+1]*(fnow[i+1] - fnow[i])/dx*dx - vel2[i]*(fnow[i] - fnow[i-1])/dx*dx) - (fpast[i] - 2*fnow[i]); // Done : Compléter le schéma B (en ajoutant des termes au A)
+        fnext[i] = beta2[i+1]*(fnow[i+1] - fnow[i]) - beta2[i]*(fnow[i] - fnow[i-1]) - (fpast[i] - 2*fnow[i]);
       }else if(schema == "C"){
-        fnext[i] = dt*dt*(vel2[i+1]*fnow[i+1] - 2*vel2[i]*fnow[i] + vel2[i-1]*fnow[i-1])/dx*dx - (fpast[i] - 2*fnow[i]); 
-        // Done : Compléter le schéma C (en ajoutant des termes au A)
+        fnext[i] = beta2[i+1]*fnow[i+1] - 2*beta2[i]*fnow[i] + beta2[i-1]*fnow[i-1] - (fpast[i] - 2*fnow[i]); // Done : Compléter le schéma C (en ajoutant des termes au A)
       }
-
     }
 
 
@@ -224,6 +229,7 @@ int main(int argc, char* argv[])
     fpast = fnow;
     fnow  = fnext;
   }
+
 
   if(ecrire_f) fichier_f << t << " " << fnow << endl;
   fichier_E << t << " " << energie(fnow,dx) << endl;
