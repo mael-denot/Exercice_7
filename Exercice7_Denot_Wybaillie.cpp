@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
 	fpast[i] = 0.;
     }
   }
-  cout<<"beta2[0] is "<<beta2[0]<<endl;
+  // cout<<"beta2[0] is "<<beta2[0]<<endl;
 
 
   // Boucle temporelle :
