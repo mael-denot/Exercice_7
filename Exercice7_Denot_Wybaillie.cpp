@@ -31,12 +31,25 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
 {
       if (bc_l == "fixe"){
         fnext[0] = fnow[0]; // done : Completer la condition au bord gauche fixe
+      
       }else if(bc_l == "libre"){
         fnext[0] = fnext[1]; // done : Completer la condition au bord gauche libre
+      
       }else if(bc_l== "harmonique"){
         fnext[0] = A*sin(omega*(t+dt)); // done : Completer la condition au bord gauche harmonique
+      
       }else if (bc_l =="sortie"){
         fnext[0] = fnow[0] -  norme_sqrt(beta2)*(fnow[0] - fnow[1]) ; // done : Completer la condition au bord gauche "sortie de l'onde"
+      
+      }else if (bc_l =="single_wave"){
+        double T = 1.0/omega;
+        if (t < T){
+          fnext[0] = A*sin(omega*(t+dt));
+        }
+        else{
+          fnext[0] = fnow[0];
+        }
+      
       }else{
         cerr << "Merci de choisir une condition valide au bord gauche" << endl;
       }
@@ -49,10 +62,18 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
         fnext[N-1] = A*sin(omega*(t+dt)); // done : Completer la condition au bord droit harmonique
       }else if (bc_r =="sortie"){
         fnext[N-1] = fnow[N-1] - sqrt(beta2[N-1])*(fnow[N-1] - fnow[N-2]); // done : Completer la condition au bord droit "sortie de l'onde"
+      }else if (bc_l =="single_wave"){
+        double T = 1.0/omega;
+        if (t < T){
+          fnext[N-1] = A*sin(omega*(t+dt));
+        }
+        else{
+          fnext[N-1] = fnow[N-1];
+        }
       }else{
         cerr << "Merci de choisir une condition valide au bord droit" << endl;
       }
-      cout << "beta2 = " << norme_sqrt(beta2) << endl;
+      // cout << "beta2 = " << norme_sqrt(beta2) << endl;
 }
 
 //
@@ -208,17 +229,17 @@ int main(int argc, char* argv[])
     ++stride;
 
 
-    // Evolution :
-    for(int i(1); i<N-1; ++i)
-    {
-    fnext[i] = beta2[i]*(fnow[i+1] - 2*fnow[i] + fnow[i-1]) - (fpast[i] - 2*fnow[i]); // Done : Compléter le schéma A
-      if(schema == "B"){
-        //fnext[i] = dt*dt*(vel2[i+1]*(fnow[i+1] - fnow[i])/dx*dx - vel2[i]*(fnow[i] - fnow[i-1])/dx*dx) - (fpast[i] - 2*fnow[i]); // Done : Compléter le schéma B (en ajoutant des termes au A)
-        fnext[i] = beta2[i+1]*(fnow[i+1] - fnow[i]) - beta2[i]*(fnow[i] - fnow[i-1]) - (fpast[i] - 2*fnow[i]);
-      }else if(schema == "C"){
-        fnext[i] = beta2[i+1]*fnow[i+1] - 2*beta2[i]*fnow[i] + beta2[i-1]*fnow[i-1] - (fpast[i] - 2*fnow[i]); // Done : Compléter le schéma C (en ajoutant des termes au A)
-      }
-    }
+     // Evolution :
+	for(int i(1); i<N-1; ++i)
+	{
+	fnext[i] = 2*(1-beta2[i])*fnow[i]-fpast[i]+beta2[i]*(fnow[i+1]+fnow[i-1]); // Done : Compléter le schéma A
+  	if(schema == "B"){
+    	fnext[i] += (beta2[i]-beta2[i-1])*(fnow[i]-fnow[i-1]);
+  	}else if(schema == "C"){
+    	fnext[i] += (beta2[i+1] - 2*beta2[i] + beta2[i-1])*fnow[i] +2*(beta2[i]-beta2[i-1])*(fnow[i]-fnow[i-1]); // Done : Compléter le schéma C (en ajoutant des termes au A)
+  	}
+	}
+
 
 
 

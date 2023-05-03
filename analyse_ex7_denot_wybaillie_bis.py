@@ -149,7 +149,7 @@ def compare_contourplot(cppFile, params):
 # Prendre un des cas de la partie precedente, avec un nombre d’intervalles nx donne. Verifier
 # et illustrer que la solution devient instable des que |βCFL| > 1.
 
-def stability(cppFile, params):
+def stability_copilot(cppFile, params):
     params['cb_gauche'] = 'harmonique'
     params['cb_droit'] = 'fixe'
     params['CFL'] = 0.5
@@ -174,7 +174,52 @@ def stability(cppFile, params):
     plt.ylabel("t")
 
     plt.show()
+
+# plot energy as a function of time in a semilog scale for different CFL numbers
+def stability(cppFile, params):
+    CFLs = [0.1, 0.5, 1.0, 1.5, 2.0]
+    for CFL in CFLs:
+        params['CFL'] = CFL
+        E, f, v, x, time, psi = runSimulation(cppFile, params)
+        plt.figure()
+        plt.semilogy(E[:,0], E[:,1])
+        plt.xlabel("Time")
+        plt.ylabel("Energy")
+        plt.title("CFL = " + str(CFL))
+    plt.show()
     
+# 7.4 Application with a tsunami wave [15pts]
+# One can represent the depth of the ocean by the following profile:
+# h(x) = hL if xL < x < xa
+# h(x) = 0.5*(hL + hR) + 0.5*(hL - hR)*cos(pi*(x - xa)/(xb - xa)) if xa < x < xb
+# h(x) = hR if xb < x < xR
+
+# one will take hL = 7.5 km, hR = 0.02 km, xa = 500, xb = 950 km, xL = 0 km, xR = 1000 km.
+# simulate the evolution of a wave coming from the left with a period T = 15 min and an amplitude A = 1 m.
+# the boundary conditions are: harmonic on the left and "sortie" on the right.
+# Use the  schemes A, B and C and compare the results.
+
+# a) what is the height of the wave when it reaches the right boundary (the coast) ?
+
+def tsunami(cppFile, params):
+    print ("Choose a scheme : A, B or C")
+    params['schema'] = input("Enter your choice: ")
+    E, f, v, x, time, psi = runSimulation(cppFile, params)
+    plt.figure()
+    plt.contourf(x, time, psi)
+    plt.xlabel("x")
+    plt.ylabel("t")
+    # add a colorbar
+    plt.colorbar()
+    plt.show()
+
+    continue_plot = input("Do you want to continue the plot? (y/n)")
+    if continue_plot == 'y':
+        tsunami(cppFile, params)
+
+
+
+
 
 
 parameters_basin = {
@@ -232,5 +277,48 @@ parameters_basin['cb_droit'] = 'fixe'
 
 parameters_basin['cb_gauche'] = 'harmonique'
 parameters_basin['cb_droit'] = 'fixe'
-parameters_basin['CFL'] = 0.5
-stability(programName, parameters_basin)
+# stability(programName, parameters_basin)
+
+# d) modes propres
+
+
+# e) double harmonic
+
+parameters_basin['cb_gauche'] = 'harmonique'
+parameters_basin['cb_droit'] = 'harmonique'
+parameters_basin['omega'] = 9.0
+parameters_basin['tfin'] = 100
+# contourplot(programName, parameters_basin)
+
+#7.5 a)
+
+
+parameters_tsunami = {
+    'cb_gauche':'harmonique',
+    'cb_droit':'sortie',
+    'v_uniform' : 'false',
+    'A':1.0,
+    'omega':2*np.pi/15.0/60.0,
+    'tfin':1e4,
+    'fmn':1.0,
+
+    'schema':'A',
+    'Npoints':100,
+    'minit':2,
+
+    'CFL':1.0,
+    'output':'output.out',
+    'n_stride':1,
+    'ecrire_f':1,
+
+    'hL' : 7.5e3,
+    'hR' : 0.02e3,
+    'h00': 2.0,
+    'xa': 5e5,
+    'xb': 9.5e5,
+    'xL': 0.0,
+    'xR': 10.0e5,
+}
+
+tsunami(programName, parameters_tsunami)
+

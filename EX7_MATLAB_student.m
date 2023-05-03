@@ -1,4 +1,4 @@
-path = "/physiquenumerique/2022-2023/EX7/SOLUTION/"; %TODO insert path name 
+path = "C:\Users\maeld\OneDrive\Bureau\EPFL\Physique_numerique\Exercice_7\Exercice>"; %TODO insert path name 
 filename = path+"test.out_f";
 data_wave=load(filename);
 filename = path+"test.out_v";

@@ -4,7 +4,7 @@ cb_droit=sortie
 v_uniform = true ! u^2=const or not
 A=1.0      ! amplitude condition au bord harmonique
 omega=1.0  ! frequence condition au bord harmonique
-tfin=4.0
+tfin=8.0
 
 schema=A ! Equation A ou B ou C
 Npoints=65
@@ -13,7 +13,7 @@ initialization = zero ! cos ou sin pour un mode propre
 fmn=1.0 ! amplitude initiale
 
 CFL=1.0
-output=test.out
+output=test
 n_stride=1
 ecrire_f=1
 
