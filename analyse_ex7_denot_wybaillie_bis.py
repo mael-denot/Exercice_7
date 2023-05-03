@@ -125,6 +125,7 @@ def contourplot(cppFile, params):
     plt.contourf(x, time, psi)
     plt.xlabel("x")
     plt.ylabel("t")
+    plt.colorbar()
     plt.show()
 
 def compare_contourplot(cppFile, params):
@@ -252,10 +253,11 @@ parameters_basin = {
 
 
 # plotting things
-# parameters_basin['cb_droit'] = 'sortie'
-# parameters_basin['cb_gauche'] = 'harmonique'
+parameters_basin['cb_droit'] = 'fixe'
+parameters_basin['cb_gauche'] = 'harmonique'
 # parameters_basin['tfin'] = 2*12/1.0
 # plotSimulation(programName, parameters_basin)
+# contourplot(programName, parameters_basin)
 
 # 7.2a) réflexion aux bords
 parameters_basin['omega'] = 7.5
@@ -284,11 +286,11 @@ parameters_basin['cb_droit'] = 'fixe'
 
 # e) double harmonic
 
-parameters_basin['cb_gauche'] = 'harmonique'
+parameters_basin['cb_gauche'] = 'single_wave'
 parameters_basin['cb_droit'] = 'harmonique'
 parameters_basin['omega'] = 9.0
-parameters_basin['tfin'] = 100
-# contourplot(programName, parameters_basin)
+parameters_basin['tfin'] = 10
+contourplot(programName, parameters_basin)
 
 #7.5 a)
 
@@ -320,5 +322,6 @@ parameters_tsunami = {
     'xR': 10.0e5,
 }
 
-tsunami(programName, parameters_tsunami)
+# tsunami(programName, parameters_tsunami)
+
 

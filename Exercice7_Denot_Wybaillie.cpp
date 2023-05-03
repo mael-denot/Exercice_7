@@ -42,7 +42,7 @@ void boundary_condition(vector<double> &fnext, vector<double> &fnow, double cons
         fnext[0] = fnow[0] -  norme_sqrt(beta2)*(fnow[0] - fnow[1]) ; // done : Completer la condition au bord gauche "sortie de l'onde"
       
       }else if (bc_l =="single_wave"){
-        double T = 1.0/omega;
+        double T = 2.0*M_PI/omega;
         if (t < T){
           fnext[0] = A*sin(omega*(t+dt));
         }
